@@ -43,6 +43,7 @@ if(isset($_GET['logout'])){
                         <li class="navitem"><a href="index.php" class="navlink">Home</a></li>
                         <li class="navitem"><a href="menu.php" class="navlink">Menu</a></li>
                         <li class="navitem"><a href="contract.php" class="navlink">Contract</a></li>
+                        <li class="navitem"><a href="orders.php" class="navlink">Orders</a></li>
                     </ul>
                 </div>
                 <div class="side-nav">

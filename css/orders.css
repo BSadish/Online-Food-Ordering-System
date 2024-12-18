@@ -1,0 +1,120 @@
+/* General Body Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+ }
+ 
+ /* Heading Style */
+ .title {
+    text-align: center;
+    font-size: 2rem;
+    margin-top: 20px;
+    color: #333;
+ }
+ 
+ /* Orders Section */
+ .placed-orders {
+    width: 90%;
+    margin: 30px auto;
+    padding: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+ }
+ 
+ /* Box Container Styling */
+ .box-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    padding: 10px;
+ }
+ 
+ /* Box Styling (Individual Order Card) */
+ .box {
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    transition: transform 0.3s ease;
+ }
+ 
+ .box:hover {
+    transform: scale(1.05);
+ }
+ 
+ /* Order Details */
+ .box p {
+    font-size: 1rem;
+    margin-bottom: 8px;
+ }
+ 
+ .box p span {
+    font-weight: bold;
+    color: #333;
+ }
+ 
+ /* Payment Status Color */
+ .box p span[style] {
+    font-weight: bold;
+    color: #333;
+ }
+ 
+ .box p span[style="color:red"] {
+    color: red;
+ }
+ 
+ .box p span[style="color:green"] {
+    color: green;
+ }
+ 
+ /* Empty Orders Message */
+ .empty {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #666;
+ }
+ 
+ /* Media Queries for Responsive Design */
+ 
+ /* For tablets and mobile devices (up to 768px) */
+ @media (max-width: 768px) {
+    .title {
+       font-size: 1.5rem;
+    }
+ 
+    .box-container {
+       grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+ 
+    .box {
+       padding: 10px;
+    }
+ 
+    .box p {
+       font-size: 0.9rem;
+    }
+ }
+ 
+ /* For mobile devices (up to 480px) */
+ @media (max-width: 480px) {
+    .title {
+       font-size: 1.2rem;
+    }
+ 
+    .box-container {
+       grid-template-columns: 1fr; /* One column for mobile devices */
+    }
+ 
+    .box {
+       padding: 8px;
+    }
+ 
+    .box p {
+       font-size: 0.8rem;
+    }
+ }
+ 
