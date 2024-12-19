@@ -9,6 +9,37 @@ $user_id = $_SESSION['user_id'];
 if(!isset($user_id)){
    header('location:login.php');
 }
+if (isset($_POST['update_order'])) {
+   $order_id = $_POST['order_id']; // Getting the order ID from the form
+   $new_status = 'completed'; // Setting the new status to 'completed'
+
+   // Step 1: Update the order status to 'completed'
+   $update_query = "UPDATE `orders` SET payment_status = '$new_status' WHERE order_id = '$order_id'";
+   if (mysqli_query($conn, $update_query)) {
+       echo "Order status updated to completed.";
+   } else {
+       echo "Failed to update order status.";
+   }
+
+   // Step 2: Delete or archive the completed order
+   if ($new_status == 'completed') {
+       // Archive the completed order by moving it to an archive table
+       $archive_query = "INSERT INTO `archived_orders` (order_id, user_id, total_price, total_products, payment_status, placed_on) 
+                         SELECT order_id, user_id, total_price, total_products, payment_status, placed_on 
+                         FROM `orders` WHERE order_id = '$order_id'";
+       if (mysqli_query($conn, $archive_query)) {
+           // Step 3: Delete the order from the original table after archiving
+           $delete_query = "DELETE FROM `orders` WHERE order_id = '$order_id' AND payment_status = 'completed'";
+           if (mysqli_query($conn, $delete_query)) {
+               echo "Completed order archived and deleted.";
+           } else {
+               echo "Failed to delete completed order.";
+           }
+       } else {
+           echo "Failed to archive completed order.";
+       }
+   }
+}
 
 
 
