@@ -18,6 +18,28 @@ if(isset($_POST['update_order'])){
    $message[] = 'payment status has been updated!';
 
 }
+if ($update_payment == 'completed') {
+   // Fetch user details to send an email
+   $select_order = mysqli_query($conn, "SELECT * FROM `orders` WHERE id = '$order_update_id'") or die('query failed');
+   if(mysqli_num_rows($select_order) > 0){
+       $fetch_order = mysqli_fetch_assoc($select_order);
+       $user_email = $fetch_order['email']; // Get user's email
+
+       // Send an email to the user
+       $subject = "Order Completed";
+       $message = "Dear customer,\n\nYour order has been completed successfully.\n\nThank you for shopping with us!";
+       $headers = "From: no-reply@yourwebsite.com"; // Change to your actual sender email
+
+       // Send the email
+       if (mail($user_email, $subject, $message, $headers)) {
+           $message[] = 'Order completed email sent to user.';
+       } else {
+           $message[] = 'Failed to send email.';
+       }
+   }
+}
+
+
 
 if(isset($_GET['delete'])){
    $delete_id = $_GET['delete'];
