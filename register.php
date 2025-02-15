@@ -60,14 +60,16 @@ if(isset($_POST['submit'])){
          const name = document.getElementById('name').value;
          const nameError = document.getElementById('nameError');
 
-         if (name.length < 3) {
-            nameError.textContent = "Name must be at least 3 characters.";
-            return false;
-         } else {
-            nameError.textContent = "";
-            return true;
-         }
-      }
+         const nameRegex = /^[A-Za-z]{4}/;
+
+   if (!nameRegex.test(name)) {
+      nameError.textContent = "Name must start with at least 4 alphabetic characters.";
+      return false;
+   } else {
+      nameError.textContent = "";
+      return true;
+   }
+}
 
       // Validate Email
       function validateEmail() {
