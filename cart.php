@@ -21,23 +21,31 @@ if(isset($_POST['add_to_cart'])){
    $product_image = $_POST['product_image'];
    $product_quantity = $_POST['product_quantity'];
 
-   $select_cart = mysqli_query($conn, "SELECT * FROM `cart` WHERE name = '$product_name' AND user_id = '$user_id'") or die('query failed');
+   if ($product_quantity > 100) {
+      $message[] = 'Quantity cannot exceed 100!';
+  } else {
+      $select_cart = mysqli_query($conn, "SELECT * FROM `cart` WHERE name = '$product_name' AND user_id = '$user_id'") or die('query failed');
+      
+      if (mysqli_num_rows($select_cart) > 0) {
+          $message[] = 'Product already in cart!';
+      } else {
+          mysqli_query($conn, "INSERT INTO `cart`(user_id, name, price, image, quantity) VALUES('$user_id', '$product_name', '$product_price', '$product_image', '$product_quantity')") or die('query failed');
+          $message[] = 'Product added to cart!';
+      }
+  }
+}
 
-//    if(mysqli_num_rows($select_cart) > 0){
-//       $message[] = 'Product already added to cart!';
-//    }else{
-//       mysqli_query($conn, "INSERT INTO `cart`(user_id, name, price, image, quantity) VALUES('$user_id', '$product_name', '$product_price', '$product_image', '$product_quantity')") or die('query failed');
-//       $message[] = 'Product added to cart!';
-//    }
-
-//
- };
 
 if(isset($_POST['update_cart'])){
    $update_quantity = $_POST['cart_quantity'];
    $update_id = $_POST['cart_id'];
-   mysqli_query($conn, "UPDATE `cart` SET quantity = '$update_quantity' WHERE id = '$update_id'") or die('query failed');
-   $message[] = 'Cart quantity updated successfully!';
+
+   if ($update_quantity > 100) {
+      $message[] = 'Quantity cannot exceed 100!';
+   } else {
+      mysqli_query($conn, "UPDATE `cart` SET quantity = '$update_quantity' WHERE id = '$update_id'") or die('query failed');
+      $message[] = 'Cart quantity updated successfully!';
+   }
 }
 
 if(isset($_GET['remove'])){
