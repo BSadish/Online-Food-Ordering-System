@@ -212,32 +212,47 @@ if(isset($_POST['update_product'])){
 </section>
 
 <script>
-   // Event listener for form submission
-   document.querySelector('.edit-product-form form').addEventListener('submit', function(event) {
-      // Get the updated product name and price values
-      var productName = document.querySelector('input[name="update_name"]').value;
-      var productPrice = document.querySelector('input[name="update_price"]').value;
+   document.querySelector('form').addEventListener('submit', function(event) {
+   // Get product name and price values
+   var productName = document.querySelector('input[name="name"]').value;
+   var productPrice = document.querySelector('input[name="price"]').value;
 
-      // Regular expression to allow only alphabets and spaces for the product name
-      var namePattern = /^[A-Za-z\s]+$/;
+   // Regular expression to allow only alphabets and spaces for the product name
+   var namePattern = /^[A-Za-z\s]+$/;
 
-      // Check if the product name is valid (only alphabets and spaces)
-      if (!namePattern.test(productName)) {
-         alert("Product name should only contain alphabets and spaces.");
-         event.preventDefault(); // Prevent form submission
-         return false;
+   // Check if the product name is valid (only alphabets and spaces)
+   if (!namePattern.test(productName)) {
+      alert("Product name should only contain alphabets and spaces.");
+      event.preventDefault(); // Prevent form submission
+      return false;
+   }
+
+   // Check if the product price is valid (must be a number greater than 0 and less than or equal to 1500)
+   if (isNaN(productPrice) || productPrice <= 0 || productPrice > 1500) {
+      alert("Product price should be a valid number between 1 and 1500.");
+      event.preventDefault(); // Prevent form submission
+      return false;
+   }
+
+
+   var xhr = new XMLHttpRequest();
+   xhr.open('POST', 'check_product_name.php', true);
+   xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+   xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+         if (xhr.responseText === 'exists') {
+            alert("Product name already exists. Please choose a different name.");
+            event.preventDefault(); // Prevent form submission
+            return false;
+         }
       }
+   };
+   xhr.send('product_name=' + productName);
 
-      // Check if the product price is valid (must be a number greater than 0)
-      if (isNaN(productPrice) || productPrice <= 0) {
-         alert("Product price should be a valid number greater than 0.");
-         event.preventDefault(); // Prevent form submission
-         return false;
-      }
+   // If both validations pass, allow the form to be submitted
+   return true;
+});
 
-      // If both validations pass, allow the form to be submitted
-      return true;
-   });
 </script>
 
 
