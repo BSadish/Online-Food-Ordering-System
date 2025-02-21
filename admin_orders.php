@@ -14,18 +14,25 @@ if (!isset($admin_id)) {
 $message = [];
 
 if (isset($_POST['update_order'])) {
-
     $order_update_id = $_POST['order_id'];
     $update_payment = $_POST['update_payment'];
 
     // Update payment status in the database
-    mysqli_query($conn, "UPDATE `orders` SET payment_status = '$update_payment' WHERE id = '$order_update_id'") or die('query failed');
+    mysqli_query($conn, "UPDATE `orders` SET payment_status = '$update_payment' WHERE id = '$order_update_id'") or die('Query failed');
     $message[] = 'Payment status has been updated!';
 }
 
 if (isset($_GET['delete'])) {
     $delete_id = $_GET['delete'];
-    mysqli_query($conn, "DELETE FROM `orders` WHERE id = '$delete_id'") or die('query failed');
+    mysqli_query($conn, "DELETE FROM `orders` WHERE id = '$delete_id'") or die('Query failed');
+
+    // Check if the table is empty, then reset AUTO_INCREMENT
+    $check_orders = mysqli_query($conn, "SELECT COUNT(*) AS count FROM `orders`");
+    $row = mysqli_fetch_assoc($check_orders);
+    if ($row['count'] == 0) {
+        mysqli_query($conn, "ALTER TABLE `orders` AUTO_INCREMENT = 1") or die('Failed to reset AUTO_INCREMENT');
+    }
+
     header('location:admin_orders.php');
 }
 
@@ -57,11 +64,13 @@ if (isset($_GET['delete'])) {
 
         <div class="box-container">
             <?php
-            $select_orders = mysqli_query($conn, "SELECT * FROM `orders`") or die('query failed');
+            $select_orders = mysqli_query($conn, "SELECT * FROM `orders`") or die('Query failed');
             if (mysqli_num_rows($select_orders) > 0) {
+                $counter = 1; // Initialize order counter
                 while ($fetch_orders = mysqli_fetch_assoc($select_orders)) {
             ?>
                     <div class="box">
+                        <p> Order Number: <span><?php echo $counter++; ?></span> </p>
                         <p> User ID: <span><?php echo $fetch_orders['user_id']; ?></span> </p>
                         <p> Placed On: <span><?php echo $fetch_orders['placed_on']; ?></span> </p>
                         <p> Name: <span><?php echo $fetch_orders['name']; ?></span> </p>
