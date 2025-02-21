@@ -86,32 +86,30 @@ if(isset($_POST['submit'])){
          }
       }
 
-      // Password Strength Checker
+      
+      // Password Validation with Strength Indicator
       function checkPasswordStrength() {
          const password = document.getElementById('password').value;
          const strength = document.getElementById('strength');
-         const low = /[a-z]/;
-         const medium = /[A-Z0-9]/;
-         const high = /[@$!%*?&#]/;
+         const upperCase = /[A-Z]/;
+         const lowerCase = /[a-z]/;
+         const number = /[0-9]/;
+         const specialChar = /[\W]/; // Special characters
 
-         let strengthLevel = 0;
+         let isValid = password.length >= 8 &&
+                       upperCase.test(password) &&
+                       lowerCase.test(password) &&
+                       number.test(password) &&
+                       specialChar.test(password);
 
-         if (low.test(password)) strengthLevel++;
-         if (medium.test(password)) strengthLevel++;
-         if (high.test(password)) strengthLevel++;
-
-         if (password.length < 6) {
-            strength.textContent = "Strength: Low (Too short)";
+         if (!isValid) {
+            strength.textContent = "Password must be at least 8 characters long, include uppercase, lowercase, a number, and a special character.";
             strength.className = "strength low";
-         } else if (strengthLevel === 1) {
-            strength.textContent = "Strength: Low";
-            strength.className = "strength low";
-         } else if (strengthLevel === 2) {
-            strength.textContent = "Strength: Medium";
-            strength.className = "strength medium";
-         } else if (strengthLevel === 3) {
-            strength.textContent = "Strength: High";
+            return false;
+         } else {
+            strength.textContent = "Valid password!";
             strength.className = "strength high";
+            return true;
          }
       }
 
