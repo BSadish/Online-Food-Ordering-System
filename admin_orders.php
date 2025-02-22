@@ -103,12 +103,13 @@ if (isset($_GET['delete'])) {
 
     <!-- Display messages -->
     <?php
-    if (!empty($message)) {
-        foreach ($message as $msg) {
-            echo '<p class="message">' . $msg . '</p>';
-        }
+if (!empty($message) && is_array($message)) {
+    foreach ($message as $msg) {
+        echo '<p class="message">' . $msg . '</p>';
     }
-    ?>
+}
+?>
+
 
     <!-- Custom Admin JS File Link -->
     <script src="js/admin_script.js"></script>
