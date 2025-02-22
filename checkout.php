@@ -267,9 +267,9 @@ if(isset($_POST['order_btn'])){
 
   const validatePinCode = () => {
     const value = pinCodeInput.value.trim();
-    const regex = /^\d{6}$/;
+    const regex = /^\d{5}$/;
     if (!regex.test(value)) {
-      showError(pinCodeInput, "Pin code must be 6 digits.");
+      showError(pinCodeInput, "Pin code must be 5 digits.");
       return false;
     }
     removeError(pinCodeInput);
