@@ -141,7 +141,7 @@ if(isset($_GET['logout'])){
                         </div>
                         <div class="point1-content">
                             <h2>Choose Your Favourite </h2>
-                            <p>There are so many varieties of food aroudn the town but ours get one more taste</p>
+                            <p>There are so many varieties of food around the town but ours get one more taste</p>
                         </div>
                     </div>
 
@@ -151,7 +151,7 @@ if(isset($_GET['logout'])){
                         </div>
                         <div class="point2-content">
                             <h2>We Deliver Your Meals</h2>
-                            <p>There are so many varieties of food aroudn the town but ours get one more taste</p>
+                            <p>There are so many varieties of food around the town but ours get one more taste</p>
                         </div>
                     </div>
 
@@ -161,7 +161,7 @@ if(isset($_GET['logout'])){
                         </div>
                         <div class="point3-content">
                             <h2>Grab Your Delicious</h2>
-                            <p>There are so many varieties of food aroudn the town but ours get one more taste</p>
+                            <p>There are so many varieties of food around the town but ours get one more taste</p>
                         </div>
                     </div>
 
@@ -349,7 +349,8 @@ if(isset($_GET['logout'])){
                             <input type="email" name="" id="email"  placeholder="Enter your Email">
                         </div>
                         <div class="click-button">
-<input type="button" value="Connect Us" >
+                            <a href="contract.php"><input type="button" value="Connect Us" ></a>
+
                         </div>
                         </form>
                     </div>
@@ -383,9 +384,9 @@ if(isset($_GET['logout'])){
             </div>
             <div class="footer-3">
                 <p id="heading">Quick Link</p>
-                <p class="text"><a href="index.html">Home</a></p>
-                <p class="text"><a href="menu.html">Menu</a></p>
-                <p class="text"><a href="#">Administrator</a></p>
+                <p class="text"><a href="index.php">Home</a></p>
+                <p class="text"><a href="menu.php">Menu</a></p>
+                <p class="text"><a href="contract.php">Contract</a></p>
             </div>
         </div>
         </div>
