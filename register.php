@@ -3,28 +3,40 @@
 include 'config.php';
 
 if(isset($_POST['submit'])){
-
-   $name = mysqli_real_escape_string($conn, $_POST['name']);
-   $email = mysqli_real_escape_string($conn, $_POST['email']);
-   $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
-   $cpass = mysqli_real_escape_string($conn, md5($_POST['cpassword']));
+   $name = mysqli_real_escape_string($conn, trim($_POST['name']));
+   $email = mysqli_real_escape_string($conn, trim($_POST['email']));
+   $pass = mysqli_real_escape_string($conn, $_POST['password']);
+   $cpass = mysqli_real_escape_string($conn, $_POST['cpassword']);
    $user_type = $_POST['user_type'];
 
-   $select = mysqli_query($conn, "SELECT * FROM `user_info` WHERE email = '$email'") or die('query failed');
-
-   if(mysqli_num_rows($select) > 0){
-      $message[] = 'User already exists!';
+   // Validate email format
+   if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+      $message[] = 'Invalid email format!';
    } else {
-      if($pass != $cpass){
-         $message[] = 'Passwords do not match!';
+      $select = mysqli_query($conn, "SELECT * FROM `user_info` WHERE email = '$email'") or die('Query failed');
+      
+      if(mysqli_num_rows($select) > 0){
+         $message[] = 'User already exists!';
       } else {
-         mysqli_query($conn, "INSERT INTO `user_info`(name, email, password, user_type) VALUES('$name', '$email', '$pass', '$user_type')") or die('query failed');
-         $message[] = 'Registered successfully!';
-         header('location:login.php');
+         if($pass !== $cpass){
+            $message[] = 'Passwords do not match!';
+         } else {
+            // Hash the password before storing it
+            $hashed_password = password_hash($pass, PASSWORD_DEFAULT);
+            
+            $insert = mysqli_query($conn, "INSERT INTO `user_info` (name, email, password, user_type) VALUES ('$name', '$email', '$hashed_password', '$user_type')") or die('Query failed');
+            
+            if($insert){
+               $message[] = 'Registered successfully!';
+               header('location: login.php');
+               exit();
+            } else {
+               $message[] = 'Registration failed!';
+            }
+         }
       }
    }
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -60,16 +72,16 @@ if(isset($_POST['submit'])){
          const name = document.getElementById('name').value;
          const nameError = document.getElementById('nameError');
 
-         const nameRegex = /^[A-Za-z]{4}/;
+         const nameRegex = /^[A-Za-z]{3}/;
 
-   if (!nameRegex.test(name)) {
-      nameError.textContent = "Name must start with at least 4 alphabetic characters.";
-      return false;
-   } else {
-      nameError.textContent = "";
-      return true;
-   }
-}
+         if (!nameRegex.test(name)) {
+            nameError.textContent = "Name must start with at least 3 alphabetic characters.";
+            return false;
+         } else {
+            nameError.textContent = "";
+            return true;
+         }
+      }
 
       // Validate Email
       function validateEmail() {
@@ -86,7 +98,6 @@ if(isset($_POST['submit'])){
          }
       }
 
-      
       // Password Validation with Strength Indicator
       function checkPasswordStrength() {
          const password = document.getElementById('password').value;
