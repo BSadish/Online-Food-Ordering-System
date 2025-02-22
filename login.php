@@ -6,35 +6,38 @@ session_start();
 if(isset($_POST['submit'])){
 
    $email = mysqli_real_escape_string($conn, $_POST['email']);
-   $pass = mysqli_real_escape_string($conn, md5($_POST['password']));
+   $pass = $_POST['password']; // Directly using the password from the form (no hashing here)
 
-   $select = mysqli_query($conn, "SELECT * FROM `user_info` WHERE email = '$email' AND password = '$pass'") or die('query failed');
+   // Select the user by email
+   $select = mysqli_query($conn, "SELECT * FROM user_info WHERE email = '$email'") or die('query failed');
 
    if(mysqli_num_rows($select) > 0){
 
       $row = mysqli_fetch_assoc($select);
 
-      if($row['user_type'] == 'admin'){
+      // Check password using password_verify
+      if(password_verify($pass, $row['password'])){
 
-         $_SESSION['admin_name'] = $row['name'];
-         $_SESSION['admin_email'] = $row['email'];
-         $_SESSION['admin_id'] = $row['id'];
-         header('location:admin_page.php');
+         if($row['user_type'] == 'admin'){
+            $_SESSION['admin_name'] = $row['name'];
+            $_SESSION['admin_email'] = $row['email'];
+            $_SESSION['admin_id'] = $row['id'];
+            header('location:admin_page.php');
 
-      }elseif($row['user_type'] == 'user'){
+         }elseif($row['user_type'] == 'user'){
+            $_SESSION['user_name'] = $row['name'];
+            $_SESSION['user_email'] = $row['email'];
+            $_SESSION['user_id'] = $row['id'];
+            header('location:index.php');
+         }
 
-         $_SESSION['user_name'] = $row['name'];
-         $_SESSION['user_email'] = $row['email'];
-         $_SESSION['user_id'] = $row['id'];
-         header('location:index.php');
-
+      } else {
+         $message[] = 'Incorrect password!';
       }
-   }
-   
-   else{
-      $message[] = 'Incorrect email or password!';
-   }
 
+   } else {
+      $message[] = 'Email not found!';
+   }
 }
 
 ?>
@@ -87,8 +90,8 @@ if(isset($message)){
 <div class="form-container">
    <form name="loginForm" action="" method="post" onsubmit="return validateForm();">
       <h3>Login Now</h3>
-      <input type="email" name="email" required placeholder="Enter email" class="box">
-      <input type="password" name="password" required placeholder="Enter password" class="box">
+      <input type="email" name="email" required placeholder="Enter email" class="box" autocomplete="off">
+      <input type="password" name="password" required placeholder="Enter password" class="box" autocomplete="new-password">
       <input type="submit" name="submit" class="btn" value="Login Now">
       <p>Don't have an account? <a href="register.php">Register Now</a></p>
    </form>
