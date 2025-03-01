@@ -24,24 +24,30 @@ if(isset($_POST['add_product'])){
    if(mysqli_num_rows($select_product_name) > 0){
       $message[] = 'product name already added';
    }else{
-      $add_product_query = mysqli_query($conn, "INSERT INTO `products`(name, price, image) VALUES('$name', '$price', '$image')") or die('query failed');
+      // File validation - check if the uploaded file is an image
+      $allowed_types = ['image/jpg', 'image/jpeg', 'image/png'];
+      $image_type = $_FILES['image']['type'];
 
-      if($add_product_query){
-         if($image_size > 2000000){
-            $message[] = 'image size is too large';
-         }else{
-            // move_uploaded_file($image_tmp_name, $image_folder);
+      if (!in_array($image_type, $allowed_types)) {
+         $message[] = 'Only JPG, JPEG, and PNG files are allowed!';
+      } else if ($image_size > 2000000) {
+         $message[] = 'Image size is too large. It should be less than 2MB.';
+      } else {
+         // Proceed with the image upload
+         $add_product_query = mysqli_query($conn, "INSERT INTO `products`(name, price, image) VALUES('$name', '$price', '$image')") or die('query failed');
+
+         if($add_product_query){
+            // Check if directory exists, if not create it
             $target_folder = 'uploaded_img/';
+            if (!is_dir($target_folder)) {
+               mkdir($target_folder, 0777, true);
+            }
 
-// Check if the directory exists, if not, create it
-if (!is_dir($target_folder)) {
-    mkdir($target_folder, 0777, true);
-}
-
-            $message[] = 'product added successfully!';
+            move_uploaded_file($image_tmp_name, $image_folder);  // Move uploaded image
+            $message[] = 'Product added successfully!';
+         } else {
+            $message[] = 'Product could not be added!';
          }
-      }else{
-         $message[] = 'product could not be added!';
       }
    }
 }
@@ -70,9 +76,15 @@ if(isset($_POST['update_product'])){
    $update_old_image = $_POST['update_old_image'];
 
    if(!empty($update_image)){
-      if($update_image_size > 2000000){
-         $message[] = 'image file size is too large';
-      }else{
+      // File validation - check if the uploaded file is an image
+      $allowed_types = ['image/jpg', 'image/jpeg', 'image/png'];
+      $image_type = $_FILES['update_image']['type'];
+
+      if (!in_array($image_type, $allowed_types)) {
+         $message[] = 'Only JPG, JPEG, and PNG files are allowed!';
+      } else if ($update_image_size > 2000000) {
+         $message[] = 'Image file size is too large. It should be less than 2MB.';
+      } else {
          mysqli_query($conn, "UPDATE `products` SET image = '$update_image' WHERE id = '$update_p_id'") or die('query failed');
          move_uploaded_file($update_image_tmp_name, $update_folder);
          unlink('uploaded_img/'.$update_old_image);
@@ -216,6 +228,7 @@ if(isset($_POST['update_product'])){
    // Get product name and price values
    var productName = document.querySelector('input[name="name"]').value;
    var productPrice = document.querySelector('input[name="price"]').value;
+   var image = document.getElementById('productImage').files[0];
 
    // Regular expression to allow only alphabets and spaces for the product name
    var namePattern = /^[A-Za-z\s]+$/;
@@ -251,7 +264,26 @@ if(isset($_POST['update_product'])){
 
    // If both validations pass, allow the form to be submitted
    return true;
+
+   if (!name || !price || !image) {
+      alert("Please fill in all fields.");
+      return;
+   }
+
+   if (!allowedTypes.includes(image.type)) {
+      alert("Only JPG, JPEG, and PNG files are allowed!");
+      return;
+   }
+
+   if (image.size > maxSize) {
+      alert("Image size is too large. It should be less than 2MB.");
+      return;
+   }
+
+   // If validation passes, submit the form
+   this.submit();
 });
+
 
 </script>
 
