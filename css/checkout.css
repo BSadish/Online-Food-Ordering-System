@@ -7,10 +7,10 @@
     /* display: inline-block; */
     max-width: 20rem;
     padding: 0px;
-    margin-top: 3rem;
+    margin-top: 5rem;
     border-radius: 0.4rem;
     padding: 4px;
-    background-color: rgb(244, 182, 182);
+    background-color: rgb(230, 15, 15);
     /* color: red; */
 }
 .flex{
@@ -23,7 +23,7 @@
 .form-content{
     border: 2px solid rgb(248, 159, 159);
     border-radius: 1rem;
-    margin-top: 4px;
+    margin-top: 98px;
     padding: 0.5rem;
     /* width: 120%; */
     
